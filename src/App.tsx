@@ -67,6 +67,20 @@ function App() {
   return matchesSearch && matchesFilter
 })
 
+  const taskStats = {
+  total: tasks.length,
+  doing: tasks.filter((task) => task.status === 'doing').length,
+  done: tasks.filter((task) => task.status === 'done').length,
+  visible: visibleTasks.length,
+}
+
+const hasActiveFilter = searchTerm.trim() !== '' || filter !== 'all'
+
+const handleClearFilters = () => {
+  setSearchTerm('')
+  setFilter('all')
+}
+
   const resetForm = () => {
     setNewTitle('')
     setNewDescription('')
@@ -174,35 +188,43 @@ const handleDeleteTask = (taskId: number) => {
           onCancelEdit={handleCancelEdit}
         />
 
-        <div className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+<div className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
   <div className="mb-4 grid gap-4 md:grid-cols-3">
     <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
       <p className="text-sm text-slate-400">全部任务</p>
-      <p className="mt-2 text-2xl font-bold text-slate-100">{tasks.length}</p>
+      <p className="mt-2 text-2xl font-bold text-slate-100">
+        {taskStats.total}
+      </p>
     </div>
 
     <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
       <p className="text-sm text-slate-400">进行中</p>
       <p className="mt-2 text-2xl font-bold text-amber-300">
-        {tasks.filter((task) => task.status === 'doing').length}
+        {taskStats.doing}
       </p>
     </div>
 
     <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
       <p className="text-sm text-slate-400">已完成</p>
       <p className="mt-2 text-2xl font-bold text-emerald-300">
-        {tasks.filter((task) => task.status === 'done').length}
+        {taskStats.done}
       </p>
     </div>
   </div>
 
-  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-    <input
-      value={searchTerm}
-      onChange={(event) => setSearchTerm(event.target.value)}
-      placeholder="搜索任务标题或描述"
-      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400 md:max-w-md"
-    />
+  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <div className="w-full md:max-w-md">
+      <input
+        value={searchTerm}
+        onChange={(event) => setSearchTerm(event.target.value)}
+        placeholder="搜索任务标题或描述"
+        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400"
+      />
+
+      <p className="mt-2 text-sm text-slate-500">
+        当前显示 {taskStats.visible} / {taskStats.total} 个任务
+      </p>
+    </div>
 
     <div className="flex flex-wrap gap-2">
       {[
@@ -224,10 +246,37 @@ const handleDeleteTask = (taskId: number) => {
           {item.label}
         </button>
       ))}
+
+      {hasActiveFilter && (
+        <button
+          type="button"
+          onClick={handleClearFilters}
+          className="rounded-lg border border-slate-600 px-3 py-2 text-sm font-semibold text-slate-300 transition hover:bg-slate-800"
+        >
+          清空筛选
+        </button>
+      )}
     </div>
   </div>
 </div>
 
+{visibleTasks.length === 0 && hasActiveFilter && (
+  <div className="mb-6 rounded-2xl border border-dashed border-slate-700 bg-slate-900/50 p-6 text-center">
+    <h2 className="text-lg font-semibold text-slate-200">
+      没有找到匹配的任务
+    </h2>
+    <p className="mt-2 text-sm text-slate-500">
+      试试换一个关键词，或者清空当前筛选条件。
+    </p>
+    <button
+      type="button"
+      onClick={handleClearFilters}
+      className="mt-4 rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+    >
+      清空搜索和筛选
+    </button>
+  </div>
+)}
 
         <div className="grid gap-5 md:grid-cols-3">
           {columns.map((column) => (
