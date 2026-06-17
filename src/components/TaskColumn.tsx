@@ -5,11 +5,18 @@ import TaskCard from './TaskCard'
 type TaskColumnProps = {
   column: Column
   tasks: Task[]
+  onEdit: (task: Task) => void
   onChangeStatus: (taskId: number, status: TaskStatus) => void
   onDelete: (taskId: number) => void
 }
 
-function TaskColumn({ column, tasks, onChangeStatus, onDelete }: TaskColumnProps) {
+function TaskColumn({
+  column,
+  tasks,
+  onEdit,
+  onChangeStatus,
+  onDelete,
+}: TaskColumnProps) {
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/30">
       <div className="mb-4 flex items-center justify-between">
@@ -29,6 +36,7 @@ function TaskColumn({ column, tasks, onChangeStatus, onDelete }: TaskColumnProps
             <TaskCard
               key={task.id}
               task={task}
+              onEdit={onEdit}
               onChangeStatus={onChangeStatus}
               onDelete={onDelete}
             />

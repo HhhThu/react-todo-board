@@ -2,11 +2,12 @@ import type { Task, TaskStatus } from '../types/task'
 
 type TaskCardProps = {
   task: Task
+  onEdit: (task: Task) => void
   onChangeStatus: (taskId: number, status: TaskStatus) => void
   onDelete: (taskId: number) => void
 }
 
-function TaskCard({ task, onChangeStatus, onDelete }: TaskCardProps) {
+function TaskCard({ task, onEdit, onChangeStatus, onDelete }: TaskCardProps) {
   return (
     <article className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
       <h3 className="font-semibold text-slate-100">{task.title}</h3>
@@ -42,6 +43,14 @@ function TaskCard({ task, onChangeStatus, onDelete }: TaskCardProps) {
             重做
           </button>
         )}
+
+        <button
+          type="button"
+          onClick={() => onEdit(task)}
+          className="rounded-lg border border-cyan-400/40 px-3 py-2 text-xs font-semibold text-cyan-300 transition hover:bg-cyan-400/10"
+        >
+          编辑
+        </button>
 
         <button
           type="button"

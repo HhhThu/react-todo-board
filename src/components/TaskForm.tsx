@@ -5,24 +5,28 @@ type TaskFormProps = {
   title: string
   description: string
   status: TaskStatus
+  isEditing: boolean
   onTitleChange: (value: string) => void
   onDescriptionChange: (value: string) => void
   onStatusChange: (status: TaskStatus) => void
-  onAddTask: () => void
+  onSubmitTask: () => void
+  onCancelEdit: () => void
 }
 
 function TaskForm({
   title,
   description,
   status,
+  isEditing,
   onTitleChange,
   onDescriptionChange,
   onStatusChange,
-  onAddTask,
+  onSubmitTask,
+  onCancelEdit,
 }: TaskFormProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onAddTask()
+    onSubmitTask()
   }
 
   return (
@@ -30,6 +34,22 @@ function TaskForm({
       onSubmit={handleSubmit}
       className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/30"
     >
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold">
+          {isEditing ? '编辑任务' : '新增任务'}
+        </h2>
+
+        {isEditing && (
+          <button
+            type="button"
+            onClick={onCancelEdit}
+            className="text-sm font-semibold text-slate-400 transition hover:text-slate-200"
+          >
+            取消编辑
+          </button>
+        )}
+      </div>
+
       <div className="grid gap-4 md:grid-cols-[1fr_1fr_160px_auto]">
         <input
           value={title}
@@ -59,7 +79,7 @@ function TaskForm({
           type="submit"
           className="rounded-xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
         >
-          添加任务
+          {isEditing ? '保存修改' : '添加任务'}
         </button>
       </div>
     </form>
